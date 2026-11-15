@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="tiktok-developers-site-verification" content="xCMqbMWE3gm98mtFKncSbl7ePndJm25U">
+<title>Alostaz Dollar</title>
+<style>
+body{font-family:sans-serif;max-width:760px;margin:40px auto;padding:0 16px;line-height:1.6;color:#111}
+.instructions{font-size:1.35rem;margin:0 0 16px}
+.box{border:2px solid #222;border-radius:8px;padding:16px;background:#f7f7f7}
+.field{margin:0 0 14px}
+.field:last-child{margin-bottom:0}
+.field span{display:block;font-size:0.9rem;color:#444;margin-bottom:4px}
+.field pre{margin:0;min-height:1.45em;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.35rem;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;user-select:all}
+button{font-size:1.15rem;padding:12px 22px;margin-top:14px;cursor:pointer}
+#status{margin-left:10px;font-size:1rem}
+</style>
+</head>
+<body>
+<p class="instructions" lang="ar" dir="rtl">انسخ الكود ده وابعته للأستاذ دولار بوت</p>
+<div class="box" id="box">
+  <div class="field"><span>code</span><pre id="code"></pre></div>
+  <div class="field"><span>state</span><pre id="state"></pre></div>
+  <div class="field"><span>error</span><pre id="error"></pre></div>
+  <div class="field"><span>error_description</span><pre id="error_description"></pre></div>
+</div>
+<p><button type="button" id="copy">Copy</button><span id="status"></span></p>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var names = ["code", "state", "error", "error_description"];
+  var values = {};
+  for (var i = 0; i < names.length; i++) {
+    var name = names[i];
+    var value = params.get(name);
+    if (value === null) value = "";
+    values[name] = value;
+    document.getElementById(name).textContent = value;
+  }
+
+  function boxText() {
+    return [
+      "code: " + values.code,
+      "state: " + values.state,
+      "error: " + values.error,
+      "error_description: " + values.error_description
+    ].join("\n");
+  }
+
+  document.getElementById("copy").addEventListener("click", function () {
+    var text = values.code || boxText();
+    var status = document.getElementById("status");
+    function mark() { status.textContent = "Copied"; }
+    function fallback() {
+      var node = document.getElementById(values.code ? "code" : "box");
+      var range = document.createRange();
+      range.selectNodeContents(node);
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      status.textContent = ok ? "Copied" : "Select the code and copy it";
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(mark, fallback);
+    } else {
+      fallback();
+    }
+  });
+})();
+</script>
+</body>
+</html>
